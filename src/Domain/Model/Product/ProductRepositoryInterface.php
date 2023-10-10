@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Model\Product;
 
-use App\Domain\Model\Product\Exception\ProductNotFoundException;
+use App\Application\Exception\Product\ProductNotFoundException;
 use Symfony\Component\Uid\Uuid;
 
 /**

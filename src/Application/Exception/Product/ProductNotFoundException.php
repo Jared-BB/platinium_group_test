@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Model\Product\Exception;
+namespace App\Application\Exception\Product;
 
 use Exception;
 use Symfony\Component\Uid\Uuid;

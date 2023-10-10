@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\Doctrine\Repository\Product;
 
-use App\Domain\Model\Product\Exception\ProductNotFoundException;
+use App\Application\Exception\Product\ProductNotFoundException;
 use App\Domain\Model\Product\Product;
 use App\Domain\Model\Product\ProductRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;

@@ -44,6 +44,7 @@ class ProductTest extends TestCase
         self::assertSame($product->id(), $id);
         self::assertSame($product->name(), $name);
         self::assertSame($product->reservePrice(), $reservePrice);
+        self::assertFalse($product->isSold());
         self::assertNull($product->soldTo());
         self::assertNotNull($product->createdAt());
         self::assertEmpty($product->bids()->toArray());
@@ -56,6 +57,7 @@ class ProductTest extends TestCase
 
         $product->calculateAuctionResult();
 
+        self::assertFalse($product->isSold());
         self::assertNull($product->soldTo());
         self::assertNull($product->finalPrice());
     }
@@ -69,6 +71,7 @@ class ProductTest extends TestCase
 
         $product->calculateAuctionResult();
 
+        self::assertFalse($product->isSold());
         self::assertNull($product->soldTo());
         self::assertNull($product->finalPrice());
     }
@@ -94,6 +97,7 @@ class ProductTest extends TestCase
 
         $product->calculateAuctionResult();
 
+        self::assertTrue($product->isSold());
         self::assertSame($product->soldTo(), $buyer_E);
         self::assertSame($product->finalPrice(), 130.00);
 
@@ -111,6 +115,7 @@ class ProductTest extends TestCase
 
         $product->calculateAuctionResult();
 
+        self::assertTrue($product->isSold());
         self::assertSame($product->soldTo(), $buyer_A);
         self::assertSame($product->finalPrice(), 100.00);
 

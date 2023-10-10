@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Application\CommandHandler;
 
 use App\Application\Command\CalculateProductAuctionResultCommand;
-use App\Domain\Model\Product\Exception\ProductNotFoundException;
+use App\Application\Exception\Product\ProductNotFoundException;
 use App\Domain\Model\Product\ProductRepositoryInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 

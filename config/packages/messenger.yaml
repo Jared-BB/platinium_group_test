@@ -1,20 +1,60 @@
 framework:
     messenger:
-        # Uncomment this (and the failed transport below) to send failed messages to this transport for later handling.
-        # failure_transport: failed
-
         transports:
-            # https://symfony.com/doc/current/messenger.html#transport-configuration
-            # async: '%env(MESSENGER_TRANSPORT_DSN)%'
-            # failed: 'doctrine://default?queue_name=failed'
-            # sync: 'sync://'
+            commands:
+                dsn: "%env(MESSENGER_TRANSPORT_DSN)%"
+                failure_transport: commands.dead
+                options:
+                    queues:
+                        commands: ~
+                    exchange:
+                        name: commands
+                        type: direct
+                    delay:
+                        exchange_name: delays
+                retry_strategy:
+                    max_retries: 6
+                    delay: 300000
+                    multiplier: 1
+                    max_delay: 0
+            events:
+                dsn: "%env(MESSENGER_TRANSPORT_DSN)%"
+                failure_transport: events.dead
+                options:
+                    queues:
+                        events: ~
+                    exchange:
+                        name: events
+                        type: direct
+                retry_strategy:
+                    max_retries: 0
+            commands.dead:
+                dsn: "%env(MESSENGER_TRANSPORT_DSN)%"
+                options:
+                    queues:
+                        commands.dead:
+                            binding_keys: ['commands']
+                    exchange:
+                        name: commands.dead
+                        type: direct
+            events.dead:
+                dsn: "%env(MESSENGER_TRANSPORT_DSN)%"
+                options:
+                    queues:
+                        events.dead:
+                            binding_keys: ['events']
+                    exchange:
+                        name: events.dead
+                        type: direct
 
         routing:
-            # Route your messages to the transports
-            # 'App\Message\YourMessage': async
+            App\Application\EventInterface: events
 
+        default_bus: commands.bus
         buses:
             commands.bus:
                 middleware:
                     - doctrine_ping_connection
                     - doctrine_close_connection
+            events.bus:
+                default_middleware: allow_no_handlers

@@ -84,6 +84,11 @@ class Product
         return $this->finalPrice;
     }
 
+    public function isSold(): bool
+    {
+        return $this->soldTo !== null;
+    }
+
     public function soldTo(): ?Buyer
     {
         return $this->soldTo;
@@ -125,24 +130,28 @@ class Product
         $winner = array_shift($highestBids);
 
         if ($winner !== null) {
-            $this->soldTo = $winner->buyer();
-
             // gets the next highest bid that dont belong to the winner
             /** @var Bid $nextHighestBids */
             $nextHighestBids = array_filter($highestBids, fn ($bid) => $bid->buyer() !== $winner->buyer());
             $lastBidNoWinner = array_shift($nextHighestBids);
 
             if ($lastBidNoWinner !== null) {
-                $this->finalPrice = $lastBidNoWinner->bid();
+                $this->sell($winner->buyer(), $lastBidNoWinner->bid());
             } else {
-                $this->finalPrice = $this->reservePrice;
+                $this->sell($winner->buyer(), $this->reservePrice);
             }
-
-            EventStore::addEvent(
-                new ProductSoldEvent(
-                    $this->id,
-                )
-            );
         }
+    }
+
+    private function sell(Buyer $buyer, float $finalPrice): void
+    {
+        $this->soldTo     = $buyer;
+        $this->finalPrice = $finalPrice;
+
+        EventStore::addEvent(
+            new ProductSoldEvent(
+                $this->id,
+            )
+        );
     }
 }
